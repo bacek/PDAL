@@ -81,6 +81,8 @@ void SampleFilter::ready(PointTableRef)
 
     log()->get(LogLevel::Debug)
         << "cell " << m_cell << ", radius " << m_radius << std::endl;
+
+    m_radiusSqr = m_radius * m_radius;
 }
 
 PointViewSet SampleFilter::run(PointViewPtr view)
@@ -131,13 +133,13 @@ bool SampleFilter::voxelize(PointRef& point)
             double xv = std::get<0>(coord);
             double yv = std::get<1>(coord);
             double zv = std::get<2>(coord);
-            double dist = std::sqrt((xv - x) * (xv - x) + (yv - y) * (yv - y) +
-                                    (zv - z) * (zv - z));
+            double distSqr =
+                (xv - x) * (xv - x) + (yv - y) * (yv - y) + (zv - z) * (zv - z);
 
             // If any point is closer than the minimum radius, we can
             // immediately return false, as the minimum distance
             // criterion is violated.
-            if (dist < m_radius)
+            if (distSqr < m_radiusSqr)
                 return false;
         }
     }
@@ -170,14 +172,13 @@ bool SampleFilter::voxelize(PointRef& point)
                     double xv = std::get<0>(coord);
                     double yv = std::get<1>(coord);
                     double zv = std::get<2>(coord);
-                    double dist =
-                        std::sqrt((xv - x) * (xv - x) + (yv - y) * (yv - y) +
-                                  (zv - z) * (zv - z));
+                    double distSqr = (xv - x) * (xv - x) + (yv - y) * (yv - y) +
+                                     (zv - z) * (zv - z);
 
                     // If any point is closer than the minimum radius, we can
                     // immediately return false, as the minimum distance
                     // criterion is violated.
-                    if (dist < m_radius)
+                    if (distSqr < m_radiusSqr)
                         return false;
                 }
             }

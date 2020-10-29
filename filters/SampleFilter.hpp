@@ -57,6 +57,7 @@ private:
     double m_cell;
     Arg* m_cellArg;
     double m_radius;
+    double m_radiusSqr;
     Arg* m_radiusArg;
     double m_originX;
     double m_originY;
