@@ -41,6 +41,27 @@ performing costly spatial searches.
     ``radius`` defines the radius of a sphere that circumscribes a voxel with
     edge length defined by ``cell``.
 
+.. note::
+
+    Care must be taken with selection of the ``cell``/``radius`` option.
+    Although the filter can now operate in streaming mode, if the extents of
+    the point cloud are large (or conversely, if the cell size is small) the
+    voxel occupancy map which grows as a function of these variables can still
+    require a large memory footprint.
+
+.. note::
+
+    To operate in streaming mode, the filter will typically retain the first
+    point to occupy a voxel (subject to the minimum distance criterion set
+    forth earlier). This means that point ordering matters, and in fact, it is
+    quite possible that points in the incoming stream can be ordered in such a
+    way as to introduce undesirable artifacts (e.g., related to previous tiling
+    of the data). In our experience, processing data that is still in scan
+    order (ordered by GpsTime, if available) does produce reliable results,
+    although to require this sort either internally or by inserting
+    :ref:`filters.sort` prior to sampling would break our ability to stream the
+    data.
+
 .. embed::
 
 .. streamable::
