@@ -34,6 +34,7 @@
 
 #include "TileKernel.hpp"
 
+#include <pdal/Options.hpp>
 #include <pdal/StageFactory.hpp>
 #include <pdal/StageWrapper.hpp>
 #include <pdal/Writer.hpp>
@@ -75,6 +76,8 @@ void TileKernel::addSwitches(ProgramArgs& args)
         m_buffer);
     args.add("out_srs", "Output SRS to which points will be reprojected",
         m_outSrs);
+    args.add("extra_dims", "extra_dims arg for LAS writer",
+        m_extraDims);
 }
 
 
@@ -297,7 +300,12 @@ void TileKernel::adder(PointRef& point, int xpos, int ypos)
         std::string yname(std::to_string(ypos));
         filename.replace(m_hashPos, 1, (xname + "_" + yname));
 
-        w = &m_manager.makeWriter(filename, "");
+        Options options;
+        if (!m_extraDims.empty()) {
+          options.add("extra_dims", m_extraDims);
+        }
+
+        w = &m_manager.makeWriter(filename, "", options);
         if (!w)
             throw pdal_error("Couldn't create writer for output file '" +
                 m_outputFile + "'.");

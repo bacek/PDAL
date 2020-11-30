@@ -71,6 +71,7 @@ private:
     SplitterFilter m_splitter;
     Streamable *m_repro;
     SpatialReference m_outSrs;
+    std::string m_extraDims;
     std::string::size_type m_hashPos;
 };
 
